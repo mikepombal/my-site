@@ -1,30 +1,8 @@
 [@react.component]
-let make = (~onServer) => {
-  <div>
-    <Header />
-    <p> {ReasonReact.string("HOME PAGE is here!!!")} </p>
-    <p> {ReasonReact.string("onServer: " ++ string_of_bool(onServer))} </p>
-    <Counter />
+let make = () => {
+  <div className="flex w-full h-screen items-center justify-center text-6xl">
+    {ReasonReact.string("TBC...")}
   </div>;
 };
 
-let default = make /* inject(default, getInitialProps)*/;
-
-// let getInitialProps = context =>
-//   Js.Promise.make((~resolve, ~reject as _) => {
-//     let onServer =
-//       switch (Js.Nullable.toOption(context##req)) {
-//       | None => false
-//       | Some(_) => true
-//       };
-//     resolve(. {"onServer": onServer});
-//   });
-
-// let inject:
-//   (
-//     Js.t('a) => React.element,
-//     {. "req": Js.Nullable.t(Js.t('a))} => Js.Promise.t(Js.t('a))
-//   ) =>
-//   unit = [%bs.raw
-//   {| (cls, fn) => cls.getInitialProps = fn |}
-// ];
+let default = make;

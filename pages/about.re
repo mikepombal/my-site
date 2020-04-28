@@ -1,10 +1,6 @@
 [@react.component]
 let make = () => {
-  <div>
-    <Header />
-    <p> {ReasonReact.string("This is the about page.")} </p>
-    <Counter />
-  </div>;
+  <div> <p> {ReasonReact.string("This is the about page.")} </p> </div>;
 };
 
 let default = make;
