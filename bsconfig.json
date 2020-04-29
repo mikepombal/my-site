@@ -1,5 +1,5 @@
 {
-  "name": "with-reasonml",
+  "name": "my-site",
   "sources": [
     {
       "dir": "components",
@@ -11,6 +11,10 @@
     },
     {
       "dir": "bindings",
+      "subdirs": true
+    },
+    {
+      "dir": "utils",
       "subdirs": true
     }
   ],
