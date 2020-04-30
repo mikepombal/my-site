@@ -1,14 +1,26 @@
 module Card = {
   [@react.component]
-  let make = () =>
+  let make = (~show=true) =>
     <div
       className="
-        bg-endless-clouds border border-gray-300 rounded-lg w-24 h-24 bg-white flex justify-center items-center shadow
+        border border-gray-300 rounded-lg w-24 h-24 bg-white flex justify-center items-center shadow overflow-hidden
         sm:w-32 sm:h-32
         md:w-40 md:h-40
         lg:w-48 lg:h-48
-      "
-    />;
+      ">
+      {show
+         ? <div
+             className="
+            bg-gray-100 w-full h-full flex justify-center items-center text-gray-800 p-2
+        ">
+             <img src="/undraw_aircraft_fbvl.svg" alt="my image" />
+           </div>
+         : <div
+             className="
+            bg-endless-clouds w-full h-full
+        "
+           />}
+    </div>;
 };
 
 [@react.component]
