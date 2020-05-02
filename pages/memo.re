@@ -15,7 +15,7 @@ let images = [
 
 module Card = {
   [@react.component]
-  let make = (~img, ~num, ~show=true) =>
+  let make = (~img, ~num, ~show) =>
     <div
       className="
         border border-gray-300 rounded-lg w-24 h-24 bg-white flex justify-center items-center shadow overflow-hidden
@@ -38,24 +38,58 @@ module Card = {
     </div>;
 };
 
+type status =
+  | On
+  | Finish;
+
+type card = {
+  image: string,
+  show: bool,
+};
+type state = {
+  status,
+  size: int,
+  cards: list(card),
+};
+
+// type action =
+//   | SetupGame(int)
+//   | Choose(int);
+
+let reducer = (state, _action) => state;
+
+let initialState = size => {
+  let randomImages = ListUtils.getNthRandomItems(images, size / 2);
+  let cards =
+    ListLabels.append(randomImages, randomImages)
+    |> ListUtils.shuffle
+    |> ListLabels.map(~f=image => {image, show: true});
+
+  {status: On, size, cards};
+};
+
 [@react.component]
-let make = () => {
+let make = (~size=6) => {
+  let (state, _dispatch) = React.useReducer(reducer, initialState(size));
   <div className="flex w-full h-screen items-center justify-center">
     <div
       className="
         grid grid-cols-3 gap-4
-        md:grid-cols-4
+        md:grid-cols-4 gap-5
         xl:grid-cols-6
     ">
       {ReasonReact.array(
          Array.map(
-           x =>
+           x => {
+             let card = ListLabels.nth(state.cards, x);
              <Card
                key={"card-" ++ string_of_int(x)}
                num=x
-               img={ListLabels.nth(images, x - 1)}
-             />,
-           Array.of_list(ListUtils.range(1, 12)),
+               show={card.show}
+               img={card.image}
+             />;
+           },
+           Array.of_list(ListUtils.range(0, size - 1)),
          ),
        )}
     </div>
