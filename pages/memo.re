@@ -15,7 +15,8 @@ let images = [
 
 module Card = {
   [@react.component]
-  let make = (~img, ~num, ~show) =>
+  let make = (~img, ~num, ~show, ~chooseCard) => {
+    let onClick = React.useCallback1(_event => chooseCard(num), [||]);
     <div
       className="
         border border-gray-300 rounded-lg w-24 h-24 bg-white flex justify-center items-center shadow overflow-hidden
@@ -31,16 +32,19 @@ module Card = {
              <img src=img alt={"image " ++ string_of_int(num)} />
            </div>
          : <div
+             onClick
              className="
             bg-endless-clouds w-full h-full
         "
            />}
     </div>;
+  };
 };
 
 type status =
-  | On
-  | Finish;
+  | NoSelectedCard
+  | OneSelectedCard
+  | TwoSelectedCards;
 
 type card = {
   image: string,
@@ -52,25 +56,46 @@ type state = {
   cards: list(card),
 };
 
-// type action =
-//   | SetupGame(int)
-//   | Choose(int);
+type action =
+  | ChooseCard(int);
 
-let reducer = (state, _action) => state;
+let updateCardStatus = (cards, numCard) =>
+  ListLabels.mapi(
+    ~f=(index, item) => index == numCard ? {...item, show: true} : item,
+    cards,
+  );
+let reducer = (state, action) => {
+  switch (state.status, action) {
+  | (NoSelectedCard, ChooseCard(numCard)) => {
+      ...state,
+      status: OneSelectedCard,
+      cards: updateCardStatus(state.cards, numCard),
+    }
+  | (OneSelectedCard, ChooseCard(numCard)) => {
+      ...state,
+      status: TwoSelectedCards,
+      cards: updateCardStatus(state.cards, numCard),
+    }
+  | _ => state
+  };
+};
 
 let initialState = size => {
   let randomImages = ListUtils.getNthRandomItems(images, size / 2);
   let cards =
     ListLabels.append(randomImages, randomImages)
     |> ListUtils.shuffle
-    |> ListLabels.map(~f=image => {image, show: true});
+    |> ListLabels.map(~f=image => {image, show: false});
 
-  {status: On, size, cards};
+  {status: NoSelectedCard, size, cards};
 };
 
 [@react.component]
 let make = (~size=6) => {
-  let (state, _dispatch) = React.useReducer(reducer, initialState(size));
+  let (state, dispatch) = React.useReducer(reducer, initialState(size));
+  let chooseCard =
+    React.useCallback1(num => dispatch(ChooseCard(num)), [||]);
+
   <div className="flex w-full h-screen items-center justify-center">
     <div
       className="
@@ -87,6 +112,7 @@ let make = (~size=6) => {
                num=x
                show={card.show}
                img={card.image}
+               chooseCard
              />;
            },
            Array.of_list(ListUtils.range(0, size - 1)),
