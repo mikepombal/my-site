@@ -16,7 +16,8 @@ let images = [
 type status =
   | NoSelectedCard
   | OneSelectedCard
-  | TwoSelectedCards;
+  | TwoSelectedCards
+  | EndGame;
 
 type card = {
   image: string,
@@ -32,7 +33,8 @@ type state = {
 
 type action =
   | ChooseCard(int)
-  | HideSelectedCards;
+  | HideSelectedCards
+  | RestartGame;
 
 let updateCardStatus = (cards, numCard) =>
   ListLabels.mapi(
@@ -52,14 +54,20 @@ let hideSelectedCards = (cards, selected) =>
   | _ => cards
   };
 
-let initialState = size => {
+let prepareNewGame = size => {
   let randomImages = ListUtils.getNthRandomItems(images, size / 2);
-  let cards =
-    ListLabels.append(randomImages, randomImages)
-    |> ListUtils.shuffle
-    |> ListLabels.map(~f=image => {image, show: false});
+  ListLabels.append(randomImages, randomImages)
+  |> ListUtils.shuffle
+  |> ListLabels.map(~f=image => {image, show: false});
+};
 
-  {status: NoSelectedCard, size, cards, selectedCards: (None, None)};
+let initialState = size => {
+  {
+    status: NoSelectedCard,
+    size,
+    cards: prepareNewGame(size),
+    selectedCards: (None, None),
+  };
 };
 
 let are2CardsEqual = (l, i1, i2) =>
@@ -75,12 +83,15 @@ let reducer = (state, action) => {
     }
   | (OneSelectedCard, ChooseCard(numCard)) =>
     switch (numCard, fst(state.selectedCards)) {
-    | (a, Some(b)) when are2CardsEqual(state.cards, a, b) => {
+    | (a, Some(b)) when are2CardsEqual(state.cards, a, b) =>
+      let cards = updateCardStatus(state.cards, numCard);
+      let isGameFinished = !ListLabels.exists(~f=i => !i.show, cards);
+      {
         ...state,
-        status: NoSelectedCard,
-        cards: updateCardStatus(state.cards, numCard),
+        status: isGameFinished ? EndGame : NoSelectedCard,
+        cards,
         selectedCards: (None, None),
-      }
+      };
 
     | _ => {
         ...state,
@@ -94,6 +105,12 @@ let reducer = (state, action) => {
       ...state,
       status: NoSelectedCard,
       cards: hideSelectedCards(state.cards, state.selectedCards),
+      selectedCards: (None, None),
+    }
+  | (EndGame, RestartGame) => {
+      ...state,
+      status: NoSelectedCard,
+      cards: prepareNewGame(state.size),
       selectedCards: (None, None),
     }
   | _ => state

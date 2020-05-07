@@ -1,7 +1,7 @@
 open MemoState;
 
 [@react.component]
-let make = (~size=12) => {
+let make = (~size=6) => {
   let (state, dispatch) = React.useReducer(reducer, initialState(size));
   let chooseCard =
     React.useCallback1(num => dispatch(ChooseCard(num)), [||]);
@@ -9,15 +9,16 @@ let make = (~size=12) => {
     () => {
       if (state.status == TwoSelectedCards) {
         let _ =
-          Js.Global.setTimeout(() => dispatch(HideSelectedCards), 2000);
+          Js.Global.setTimeout(() => dispatch(HideSelectedCards), 1000);
         ();
       };
       None;
     },
     [|state.status|],
   );
+  let onClick = React.useCallback1(_event => dispatch(RestartGame), [||]);
 
-  <div className="flex w-full h-screen items-center justify-center">
+  <div className="flex w-full h-full items-center justify-center relative">
     <div
       className="
         grid grid-cols-3 gap-4
@@ -40,6 +41,19 @@ let make = (~size=12) => {
          ),
        )}
     </div>
+    {state.status == EndGame
+       ? <div
+           className="bg-gray-400 bg-opacity-50 absolute inset-0 rounded-lg flex justify-center items-center flex-col">
+           <div className="text-gray-800 text-6xl mb-8">
+             {ReasonReact.string("Winner!")}
+           </div>
+           <button
+             onClick
+             className="block bg-blue-500 text-white text-lg p-3 rounded shadow">
+             {ReasonReact.string("Restart")}
+           </button>
+         </div>
+       : ReasonReact.null}
   </div>;
 };
 
