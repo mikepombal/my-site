@@ -1,13 +1,11 @@
 [@react.component]
-let make = (~img, ~num, ~show, ~chooseCard) => {
+let make = (~img, ~num, ~show, ~chooseCard, ~length) => {
   let onClick = React.useCallback1(_event => chooseCard(num), [||]);
   <div
     className="
-        border border-gray-300 rounded-lg w-24 h-24 bg-white flex justify-center items-center shadow overflow-hidden
-        sm:w-32 sm:h-32
-        md:w-40 md:h-40
-        lg:w-48 lg:h-48
-      ">
+        border border-gray-300 rounded-lg bg-white flex justify-center items-center shadow overflow-hidden
+      "
+    style={ReactDOMRe.Style.make(~width=length, ~height=length, ())}>
     {show
        ? <div
            className="

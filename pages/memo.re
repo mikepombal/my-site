@@ -1,4 +1,7 @@
 [@react.component]
-let make = () => <MemoGame />;
+let make = () =>
+  <WithDimensions
+    renderView={(width, height) => <MemoGame size=12 width height />}
+  />;
 
 let default = make;
