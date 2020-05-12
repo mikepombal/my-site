@@ -18,14 +18,29 @@ let make = (~size=12) => {
   );
   let onClick = React.useCallback1(_event => dispatch(RestartGame), [||]);
 
-  <div
-    className=" m-auto relative"
-    style={ReactDOMRe.Style.make(~maxWidth="133vh", ())}>
-    <WithDimensions
-      renderView={(width, height) =>
-        <BoardCards size width height cards={state.cards} chooseCard />
-      }
-    />
+  <div className="relative">
+    <div
+      className="grid grid-cols-6 m-auto px-4"
+      style={ReactDOMRe.Style.make(~maxWidth="155vh", ())}>
+      <div className="col-span-5">
+        <WithDimensions
+          renderView={(width, height) =>
+            <BoardCards size width height cards={state.cards} chooseCard />
+          }
+        />
+      </div>
+      <div className=" flex justify-center items-center p-2">
+        <div
+          className="bg-gray-100 w-full flex justify-center items-center flex-col rounded-lg py-4 shadow-lg">
+          <div className="text-2xl text-gray-500">
+            {ReasonReact.string("Counter")}
+          </div>
+          <div className="text-6xl text-gray-700">
+            {ReasonReact.string("10")}
+          </div>
+        </div>
+      </div>
+    </div>
     {state.status == EndGame
        ? <div
            className="bg-gray-400 bg-opacity-50 absolute inset-0 rounded-lg flex justify-center items-center">
