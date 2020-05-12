@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "bs-webapi": "^0.15.9",
+    "framer-motion": "^1.10.3",
     "next": "^9.3.6",
     "next-transpile-modules": "^3.0.2",
     "react": "^16.12.0",

@@ -7,12 +7,15 @@ let make = (~img, ~num, ~show, ~chooseCard, ~length) => {
       "
     style={ReactDOMRe.Style.make(~width=length, ~height=length, ())}>
     {show
-       ? <div
+       ? <Animation.Div
+           exit={"scale": 0.0}
+           initial={"scale": 0.0}
+           animate={"scale": 1.0}
            className="
             bg-gray-100 w-full h-full flex justify-center items-center text-gray-800 p-6
         ">
            <img src=img alt={"image " ++ string_of_int(num)} />
-         </div>
+         </Animation.Div>
        : <div
            onClick
            className="

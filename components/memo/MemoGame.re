@@ -44,15 +44,22 @@ let make = (~size=6, ~width=0, ~height=0) => {
          </div>
          {state.status == EndGame
             ? <div
-                className="bg-gray-400 bg-opacity-50 absolute inset-0 rounded-lg flex justify-center items-center flex-col">
-                <div className="text-gray-800 text-6xl mb-8">
-                  {ReasonReact.string("Winner!")}
-                </div>
-                <button
-                  onClick
-                  className="block bg-blue-500 text-white text-lg p-3 rounded shadow">
-                  {ReasonReact.string("Restart")}
-                </button>
+                className="bg-gray-400 bg-opacity-50 absolute inset-0 rounded-lg flex justify-center items-center">
+                <Animation.Div
+                  exit={"scale": 0.0}
+                  initial={"scale": 0.0}
+                  animate={"scale": 1.0}
+                  transition={"delay": 0.3}
+                  className="bg-gray-400 rounded-lg flex justify-center items-center flex-col py-10 px-20 bg-opacity-75">
+                  <div className="text-gray-700 text-6xl mb-8">
+                    {ReasonReact.string("Winner!")}
+                  </div>
+                  <button
+                    onClick
+                    className="block bg-blue-500 text-white text-lg p-3 rounded shadow">
+                    {ReasonReact.string("Restart")}
+                  </button>
+                </Animation.Div>
               </div>
             : ReasonReact.null}
        </div>
