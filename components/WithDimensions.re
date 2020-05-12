@@ -14,7 +14,6 @@ let make = (~renderView: (int, int) => ReasonReact.reactElement) => {
     React.useState(_ => {width: 0, height: 0});
 
   let getNewDimensions = () => {
-    Js.log("Getting new dimensions???");
     switch (React.Ref.current(targetRef)->Js.Nullable.toOption) {
     | Some(e) =>
       let element = ReactDOMRe.domElementToObj(e);
@@ -35,9 +34,7 @@ let make = (~renderView: (int, int) => ReasonReact.reactElement) => {
         "resize",
         _ => {
           switch (timer^) {
-          | Some(timerId) =>
-            Js.log2("clearing", timerId);
-            Js.Global.clearTimeout(timerId);
+          | Some(timerId) => Js.Global.clearTimeout(timerId)
           | None => ()
           };
           timer := Some(Js.Global.setTimeout(_ => onResize(), 500));

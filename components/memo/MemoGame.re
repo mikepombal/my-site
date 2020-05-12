@@ -22,10 +22,9 @@ let make = (~size=12) => {
     className=" m-auto relative"
     style={ReactDOMRe.Style.make(~maxWidth="133vh", ())}>
     <WithDimensions
-      renderView={(width, height) => {
-        Js.log3("Here?", width, height);
-        <BoardCards size width height cards={state.cards} chooseCard />;
-      }}
+      renderView={(width, height) =>
+        <BoardCards size width height cards={state.cards} chooseCard />
+      }
     />
     {state.status == EndGame
        ? <div
