@@ -13,6 +13,20 @@ let images = [
   "undraw_true_love_cy8x.svg",
 ];
 
+type level = {
+  number: int,
+  size: int,
+};
+
+let levels = [
+  {number: 1, size: 6},
+  {number: 2, size: 8},
+  {number: 3, size: 12},
+  {number: 4, size: 16},
+  {number: 5, size: 20},
+  {number: 6, size: 24},
+];
+
 type status =
   | NoSelectedCard
   | OneSelectedCard
@@ -27,6 +41,7 @@ type card = {
 
 type state = {
   status,
+  level: int,
   size: int,
   cards: list(card),
   lives: int,
@@ -63,12 +78,14 @@ let prepareNewGame = size => {
   |> ListLabels.map(~f=image => {image, show: false});
 };
 
-let initialState = size => {
+let initialState = levelNumber => {
+  let level = ListLabels.nth(levels, levelNumber - 1);
   {
     status: NoSelectedCard,
-    size,
+    level: level.number,
+    size: level.size,
     lives: 5,
-    cards: prepareNewGame(size),
+    cards: prepareNewGame(level.size),
     selectedCards: (None, None),
   };
 };

@@ -1,8 +1,8 @@
 open MemoState;
 
 [@react.component]
-let make = (~size=12) => {
-  let (state, dispatch) = React.useReducer(reducer, initialState(size));
+let make = (~level=1) => {
+  let (state, dispatch) = React.useReducer(reducer, initialState(level));
   let chooseCard =
     React.useCallback1(num => dispatch(ChooseCard(num)), [||]);
   React.useEffect1(
@@ -25,7 +25,13 @@ let make = (~size=12) => {
       <div className="col-span-5">
         <WithDimensions
           renderView={(width, height) =>
-            <BoardCards size width height cards={state.cards} chooseCard />
+            <BoardCards
+              size={state.size}
+              width
+              height
+              cards={state.cards}
+              chooseCard
+            />
           }
         />
       </div>

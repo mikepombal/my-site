@@ -1,4 +1,4 @@
 [@react.component]
-let make = () => <MemoGame size=12 />;
+let make = () => <MemoGame level=3 />;
 
 let default = make;
