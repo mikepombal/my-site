@@ -33,15 +33,15 @@ let make = (~size=12) => {
         <div
           className="bg-gray-100 w-full flex justify-center items-center flex-col rounded-lg py-4 shadow-lg">
           <div className="text-2xl text-gray-500">
-            {ReasonReact.string("Counter")}
+            {ReasonReact.string("Left")}
           </div>
           <div className="text-6xl text-gray-700">
-            {ReasonReact.string("10")}
+            {ReasonReact.string(string_of_int(state.lives))}
           </div>
         </div>
       </div>
     </div>
-    {state.status == EndGame
+    {state.status == GameWon || state.status == GameLost
        ? <div
            className="bg-gray-400 bg-opacity-50 absolute inset-0 rounded-lg flex justify-center items-center">
            <Animation.Div
@@ -51,7 +51,9 @@ let make = (~size=12) => {
              transition={"delay": 0.3}
              className="bg-gray-400 rounded-lg flex justify-center items-center flex-col py-10 px-20 bg-opacity-75">
              <div className="text-gray-700 text-6xl mb-8">
-               {ReasonReact.string("Winner!")}
+               {ReasonReact.string(
+                  state.status == GameWon ? "Winner!" : "Loser!",
+                )}
              </div>
              <button
                onClick

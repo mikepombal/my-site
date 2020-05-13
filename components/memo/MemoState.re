@@ -17,7 +17,8 @@ type status =
   | NoSelectedCard
   | OneSelectedCard
   | TwoSelectedCards
-  | EndGame;
+  | GameWon
+  | GameLost;
 
 type card = {
   image: string,
@@ -28,6 +29,7 @@ type state = {
   status,
   size: int,
   cards: list(card),
+  lives: int,
   selectedCards: (option(int), option(int)),
 };
 
@@ -65,6 +67,7 @@ let initialState = size => {
   {
     status: NoSelectedCard,
     size,
+    lives: 5,
     cards: prepareNewGame(size),
     selectedCards: (None, None),
   };
@@ -88,17 +91,20 @@ let reducer = (state, action) => {
       let isGameFinished = !ListLabels.exists(~f=i => !i.show, cards);
       {
         ...state,
-        status: isGameFinished ? EndGame : NoSelectedCard,
+        status: isGameFinished ? GameWon : NoSelectedCard,
         cards,
         selectedCards: (None, None),
       };
 
-    | _ => {
+    | _ =>
+      let lives = state.lives - 1;
+      {
         ...state,
-        status: TwoSelectedCards,
+        status: lives <= 0 ? GameLost : TwoSelectedCards,
         cards: updateCardStatus(state.cards, numCard),
         selectedCards: (fst(state.selectedCards), Some(numCard)),
-      }
+        lives,
+      };
     }
 
   | (TwoSelectedCards, HideSelectedCards) => {
@@ -107,11 +113,12 @@ let reducer = (state, action) => {
       cards: hideSelectedCards(state.cards, state.selectedCards),
       selectedCards: (None, None),
     }
-  | (EndGame, RestartGame) => {
+  | (_, RestartGame) => {
       ...state,
       status: NoSelectedCard,
       cards: prepareNewGame(state.size),
       selectedCards: (None, None),
+      lives: 5,
     }
   | _ => state
   };
