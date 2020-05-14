@@ -10,10 +10,11 @@ type state = {
 };
 
 type action =
-  | Choose(int);
+  | Choose(int)
+  | SwapGrid;
 
 let prepareNewGame = variant => {
-  variant: 3,
+  variant,
   grid: Array.map(i => {value: i, chosen: false}, Belt.Array.range(1, 50)),
   selectedNumber:
     Belt.Array.makeByAndShuffle(50, i => i + 1)
@@ -32,6 +33,7 @@ let reducer = (state, action) => {
           state.grid,
         ),
     }
+  | SwapGrid => prepareNewGame(state.variant == 3 ? 4 : 3)
   };
 };
 
@@ -44,19 +46,24 @@ let make = () => {
       {ReasonReact.string("Bingo")}
     </div>
     <div className="grid grid-cols-3 gap-10 mt-10">
-      <div className="grid grid-cols-3 gap-2">
+      <div
+        className={
+          "grid gap-2 border-4 border-purple-400 p-2"
+          ++ " "
+          ++ (state.variant == 3 ? "grid-cols-3" : "grid-cols-4")
+        }>
         {ReasonReact.array(
            Array.map(
              x =>
                <div
                  key={"selected" ++ string_of_int(x)}
                  className={
-                   "flex justify-center items-center p-6 text-4xl border-2 rounded-lg"
+                   "flex justify-center items-center p-6 text-3xl border-2 rounded-lg"
                    ++ " "
                    ++ (
                      state.grid[x - 1].chosen
-                       ? "bg-green-300 border-green-300 text-white"
-                       : "text-purple-700 border-purple-300"
+                       ? "bg-green-400 border-green-400 text-white"
+                       : "text-purple-700 border-purple-200"
                    )
                  }>
                  {ReasonReact.string(string_of_int(x))}
@@ -88,6 +95,13 @@ let make = () => {
          )}
       </div>
     </div>
+    <button
+      className="mt-10 bg-purple-400 text-white px-4 py-2 rounded-lg focus:outline-none"
+      onClick={_event => dispatch(SwapGrid)}>
+      {ReasonReact.string(
+         "Swap to " ++ (state.variant == 3 ? "4 by 4" : "3 by 3") ++ " grid",
+       )}
+    </button>
   </div>;
 };
 
