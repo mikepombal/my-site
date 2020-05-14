@@ -16,17 +16,39 @@ let make = (~level=1) => {
     },
     [|state.status|],
   );
-  let onClick = React.useCallback1(_event => dispatch(RestartGame), [||]);
+  let onClickRestartLevel =
+    React.useCallback1(
+      _event => dispatch(SetNewGame(state.currentLevel.number)),
+      [|state.currentLevel|],
+    );
+  let onClickNextLevel =
+    React.useCallback1(
+      _event => dispatch(SetNewGame(state.currentLevel.number + 1)),
+      [|state.currentLevel|],
+    );
+  Js.log("Parent");
 
   <div className="relative">
     <div
       className="grid grid-cols-6 m-auto px-4"
-      style={ReactDOMRe.Style.make(~maxWidth="155vh", ())}>
+      style={ReactDOMRe.Style.make(
+        ~maxWidth=
+          string_of_int(
+            state.currentLevel.cols * 100 / state.currentLevel.rows * 7 / 6,
+          )
+          ++ "vh",
+        (),
+      )}>
       <div className="col-span-5">
         <WithDimensions
+          unique={
+            string_of_int(state.currentLevel.rows)
+            ++ "x"
+            ++ string_of_int(state.currentLevel.cols)
+          }
           renderView={(width, height) =>
             <BoardCards
-              size={state.size}
+              level={state.currentLevel}
               width
               height
               cards={state.cards}
@@ -42,7 +64,7 @@ let make = (~level=1) => {
             {ReasonReact.string("Left")}
           </div>
           <div className="text-6xl text-gray-700">
-            {ReasonReact.string(string_of_int(state.lives))}
+            {ReasonReact.string(string_of_int(state.livesLeft))}
           </div>
         </div>
       </div>
@@ -58,14 +80,24 @@ let make = (~level=1) => {
              className="bg-gray-400 rounded-lg flex justify-center items-center flex-col py-10 px-20 bg-opacity-75">
              <div className="text-gray-700 text-6xl mb-8">
                {ReasonReact.string(
-                  state.status == GameWon ? "Winner!" : "Loser!",
+                  state.status == GameWon ? "Winner!" : "Unlucky :(",
                 )}
              </div>
-             <button
-               onClick
-               className="block bg-blue-500 text-white text-lg p-3 rounded shadow">
-               {ReasonReact.string("Restart")}
-             </button>
+             <div className="flex">
+               <button
+                 onClick=onClickRestartLevel
+                 className="block bg-blue-700 text-white text-lg p-3 rounded shadow">
+                 {ReasonReact.string("Restart")}
+               </button>
+               {state.status == GameWon
+                && state.currentLevel.number < ListLabels.length(levels)
+                  ? <button
+                      onClick=onClickNextLevel
+                      className="block bg-blue-700 text-white text-lg p-3 rounded shadow ml-8">
+                      {ReasonReact.string("Next Level")}
+                    </button>
+                  : ReasonReact.null}
+             </div>
            </Animation.Div>
          </div>
        : ReasonReact.null}

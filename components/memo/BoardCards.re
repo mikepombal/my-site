@@ -1,14 +1,17 @@
 open MemoState;
 
 [@react.component]
-let make = (~size, ~width=0, ~height=0, ~cards, ~chooseCard) => {
-  <div className="w-full pb-75pc relative">
+let make = (~level, ~width=0, ~height=0, ~cards, ~chooseCard) => {
+  <div
+    className="w-full relative"
+    style={ReactDOMRe.Style.make(
+      ~paddingBottom=string_of_int(level.rows * 100 / level.cols) ++ "%",
+      (),
+    )}>
     {switch (width, height) {
      | (w, h) when w > 0 && h > 0 =>
        <div className="absolute inset-0 flex justify-center items-center mx-4">
-         <div className="
-        grid grid-cols-4
-    ">
+         <div className={"grid grid-cols-" ++ string_of_int(level.cols)}>
            {ReasonReact.array(
               Array.map(
                 x => {
@@ -16,13 +19,13 @@ let make = (~size, ~width=0, ~height=0, ~cards, ~chooseCard) => {
                   <Card
                     key={"card-" ++ string_of_int(x)}
                     num=x
-                    length={string_of_int(w / 4) ++ "px"}
+                    length={w / level.cols}
                     show={card.show}
                     img={card.image}
                     chooseCard
                   />;
                 },
-                Array.of_list(ListUtils.range(0, size - 1)),
+                Array.of_list(ListUtils.range(0, level.size - 1)),
               ),
             )}
          </div>

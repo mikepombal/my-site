@@ -16,15 +16,19 @@ let images = [
 type level = {
   number: int,
   size: int,
+  lives: int,
+  cols: int,
+  rows: int,
 };
 
 let levels = [
-  {number: 1, size: 6},
-  {number: 2, size: 8},
-  {number: 3, size: 12},
-  {number: 4, size: 16},
-  {number: 5, size: 20},
-  {number: 6, size: 24},
+  {number: 1, size: 6, lives: 3, cols: 3, rows: 2},
+  {number: 2, size: 8, lives: 4, cols: 4, rows: 2},
+  {number: 3, size: 12, lives: 6, cols: 4, rows: 3},
+  {number: 4, size: 16, lives: 8, cols: 4, rows: 4},
+  {number: 5, size: 20, lives: 12, cols: 5, rows: 4},
+  {number: 6, size: 24, lives: 16, cols: 6, rows: 4},
+  {number: 7, size: 24, lives: 12, cols: 6, rows: 4},
 ];
 
 type status =
@@ -41,17 +45,16 @@ type card = {
 
 type state = {
   status,
-  level: int,
-  size: int,
+  currentLevel: level,
   cards: list(card),
-  lives: int,
+  livesLeft: int,
   selectedCards: (option(int), option(int)),
 };
 
 type action =
   | ChooseCard(int)
   | HideSelectedCards
-  | RestartGame;
+  | SetNewGame(int);
 
 let updateCardStatus = (cards, numCard) =>
   ListLabels.mapi(
@@ -71,24 +74,23 @@ let hideSelectedCards = (cards, selected) =>
   | _ => cards
   };
 
-let prepareNewGame = size => {
-  let randomImages = ListUtils.getNthRandomItems(images, size / 2);
-  ListLabels.append(randomImages, randomImages)
-  |> ListUtils.shuffle
-  |> ListLabels.map(~f=image => {image, show: false});
-};
-
-let initialState = levelNumber => {
+let prepareNewGame = levelNumber => {
   let level = ListLabels.nth(levels, levelNumber - 1);
+  let randomImages = ListUtils.getNthRandomItems(images, level.size / 2);
+  let cards =
+    ListLabels.append(randomImages, randomImages)
+    |> ListUtils.shuffle
+    |> ListLabels.map(~f=image => {image, show: false});
   {
     status: NoSelectedCard,
-    level: level.number,
-    size: level.size,
-    lives: 5,
-    cards: prepareNewGame(level.size),
+    currentLevel: level,
+    livesLeft: level.lives,
+    cards,
     selectedCards: (None, None),
   };
 };
+
+let initialState = levelNumber => prepareNewGame(levelNumber);
 
 let are2CardsEqual = (l, i1, i2) =>
   ListLabels.nth(l, i1).image == ListLabels.nth(l, i2).image;
@@ -114,13 +116,13 @@ let reducer = (state, action) => {
       };
 
     | _ =>
-      let lives = state.lives - 1;
+      let livesLeft = state.livesLeft - 1;
       {
         ...state,
-        status: lives <= 0 ? GameLost : TwoSelectedCards,
+        status: livesLeft <= 0 ? GameLost : TwoSelectedCards,
         cards: updateCardStatus(state.cards, numCard),
         selectedCards: (fst(state.selectedCards), Some(numCard)),
-        lives,
+        livesLeft,
       };
     }
 
@@ -130,13 +132,7 @@ let reducer = (state, action) => {
       cards: hideSelectedCards(state.cards, state.selectedCards),
       selectedCards: (None, None),
     }
-  | (_, RestartGame) => {
-      ...state,
-      status: NoSelectedCard,
-      cards: prepareNewGame(state.size),
-      selectedCards: (None, None),
-      lives: 5,
-    }
+  | (_, SetNewGame(levelNumber)) => prepareNewGame(levelNumber)
   | _ => state
   };
 };

@@ -8,7 +8,7 @@ type dimension = {
 let resetTimeout = 100;
 
 [@react.component]
-let make = (~renderView: (int, int) => ReasonReact.reactElement) => {
+let make = (~unique="", ~renderView: (int, int) => ReasonReact.reactElement) => {
   let targetRef = React.useRef(Js.Nullable.null);
   let (dimensions, setDimensions) =
     React.useState(_ => {width: 0, height: 0});
@@ -52,6 +52,13 @@ let make = (~renderView: (int, int) => ReasonReact.reactElement) => {
       );
     },
     [||],
+  );
+  React.useEffect1(
+    () => {
+      getNewDimensions();
+      None;
+    },
+    [|unique|],
   );
   <div ref={ReactDOMRe.Ref.domRef(targetRef)}>
     {renderView(dimensions.width, dimensions.height)}
