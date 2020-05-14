@@ -29,7 +29,7 @@ let reducer = (state, action) => {
       ...state,
       grid:
         Array.map(
-          i => {...i, chosen: i.value == num ? true : i.chosen},
+          i => {...i, chosen: i.value == num ? !i.chosen : i.chosen},
           state.grid,
         ),
     }
@@ -58,7 +58,7 @@ let make = () => {
                <div
                  key={"selected" ++ string_of_int(x)}
                  className={
-                   "flex justify-center items-center p-6 text-3xl border-2 rounded-lg"
+                   "flex justify-center items-center p-6 text-3xl border-2 rounded-lg select-none"
                    ++ " "
                    ++ (
                      state.grid[x - 1].chosen
@@ -79,7 +79,7 @@ let make = () => {
                <div
                  key={"grid" ++ string_of_int(x.value)}
                  className={
-                   "flex justify-center items-center p-6 text-xl border-2  cursor-pointer rounded-lg"
+                   "flex justify-center items-center p-6 text-xl border-2  cursor-pointer rounded-lg select-none"
                    ++ " "
                    ++ (
                      x.chosen
