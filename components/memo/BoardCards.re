@@ -11,7 +11,13 @@ let make = (~level, ~width=0, ~height=0, ~cards, ~chooseCard) => {
     {switch (width, height) {
      | (w, h) when w > 0 && h > 0 =>
        <div className="absolute inset-0 flex justify-center items-center mx-4">
-         <div className={"grid grid-cols-" ++ string_of_int(level.cols)}>
+         <div
+           style={ReactDOMRe.Style.make(
+             ~gridTemplateColumns=
+               "repeat(" ++ string_of_int(level.cols) ++ ", minmax(0, 1fr))",
+             (),
+           )}
+           className="grid">
            {ReasonReact.array(
               Array.map(
                 x => {
