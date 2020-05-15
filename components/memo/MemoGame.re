@@ -83,9 +83,14 @@ let make = (~level=1) => {
              animate={"scale": 1.0}
              transition={"delay": 0.3}
              className="bg-gray-400 rounded-lg flex justify-center items-center flex-col py-10 px-20 bg-opacity-75">
-             <div className="text-gray-700 text-6xl mb-8">
+             <div className="text-gray-700 text-6xl mb-8 text-center">
                {ReasonReact.string(
-                  state.status == GameWon ? "Winner!" : "Unlucky :(",
+                  switch (state.status, state.currentLevel.number) {
+                  | (GameWon, 7) => "Champion! You've beaten all the levels."
+                  | (GameWon, _) => "Winner!"
+                  | (GameLost, _) => "Unlucky :("
+                  | (_, _) => ""
+                  },
                 )}
              </div>
              <div className="flex">
