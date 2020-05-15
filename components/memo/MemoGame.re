@@ -58,9 +58,15 @@ let make = (~level=1) => {
       </div>
       <div className=" flex justify-center items-center p-2">
         <div
-          className="bg-gray-100 w-full flex justify-center items-center flex-col rounded-lg py-4 shadow-lg">
-          <div className="text-2xl text-gray-500">
-            {ReasonReact.string("Left")}
+          className="bg-gray-100 w-full flex justify-center items-center flex-col rounded-lg pb-4 shadow-lg overflow-hidden">
+          <div
+            className="bg-purple-500 text-white w-full text-3xl py-2 text-center shadow-md">
+            {ReasonReact.string(
+               "Level " ++ string_of_int(state.currentLevel.number),
+             )}
+          </div>
+          <div className="text-2xl text-gray-500 mt-6">
+            {ReasonReact.string("Lives")}
           </div>
           <div className="text-6xl text-gray-700">
             {ReasonReact.string(string_of_int(state.livesLeft))}
@@ -85,14 +91,14 @@ let make = (~level=1) => {
              <div className="flex">
                <button
                  onClick=onClickRestartLevel
-                 className="block bg-blue-700 text-white text-lg p-3 rounded shadow">
+                 className="block bg-blue-700 text-white text-lg px-6 py-3 rounded shadow">
                  {ReasonReact.string("Restart")}
                </button>
                {state.status == GameWon
                 && state.currentLevel.number < ListLabels.length(levels)
                   ? <button
                       onClick=onClickNextLevel
-                      className="block bg-blue-700 text-white text-lg p-3 rounded shadow ml-8">
+                      className="block bg-blue-700 text-white text-lg px-6 py-3 rounded shadow ml-8">
                       {ReasonReact.string("Next Level")}
                     </button>
                   : ReasonReact.null}
