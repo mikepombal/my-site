@@ -20,7 +20,11 @@ let make = (~img, ~num, ~show, ~chooseCard, ~length) => {
              className="
             bg-gray-100 w-full h-full flex justify-center items-center text-gray-800 p-10pc
         ">
-             <img src=img alt={"image " ++ string_of_int(num)} />
+             <img
+               src=img
+               alt={"image " ++ string_of_int(num)}
+               className="select-none"
+             />
            </Animation.Div>
          : <div
              onClick
