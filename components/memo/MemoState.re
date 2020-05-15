@@ -76,10 +76,16 @@ let hideSelectedCards = (cards, selected) =>
 
 let prepareNewGame = levelNumber => {
   let level = ListLabels.nth(levels, levelNumber - 1);
-  let randomImages = ListUtils.getNthRandomItems(images, level.size / 2);
+  let randomImages =
+    Belt.Array.makeByAndShuffle(ListLabels.length(images), i => i)
+    |> Belt.Array.slice(~len=level.size / 2, ~offset=0)
+    |> ArrayLabels.map(~f=index => ListLabels.nth(images, index))
+    |> Array.to_list;
   let cards =
-    ListLabels.append(randomImages, randomImages)
-    |> ListUtils.shuffle
+    Belt.Array.makeByAndShuffle(level.size, i =>
+      ListLabels.nth(randomImages, i mod level.size / 2)
+    )
+    |> Array.to_list
     |> ListLabels.map(~f=image => {image, show: false});
   {
     status: NoSelectedCard,

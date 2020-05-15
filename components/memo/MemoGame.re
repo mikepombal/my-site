@@ -26,7 +26,6 @@ let make = (~level=1) => {
       _event => dispatch(SetNewGame(state.currentLevel.number + 1)),
       [|state.currentLevel|],
     );
-  Js.log("Parent");
 
   <div className="relative">
     <div

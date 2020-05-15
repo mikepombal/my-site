@@ -17,21 +17,3 @@ let rec remove = (value, l) => {
   | [head, ...tail] => [head, ...remove(value, tail)]
   };
 };
-
-let rec getNthRandomItems = (l, num) => {
-  switch (num) {
-  | 0 => []
-  | _ =>
-    let item = ListLabels.length(l) |> Random.int |> ListLabels.nth(l);
-    [item, ...getNthRandomItems(remove(item, l), num - 1)];
-  };
-};
-
-let rec shuffle = l => {
-  switch (l) {
-  | [] => []
-  | _ =>
-    let item = ListLabels.length(l) |> Random.int |> ListLabels.nth(l);
-    [item, ...shuffle(remove(item, l))];
-  };
-};
