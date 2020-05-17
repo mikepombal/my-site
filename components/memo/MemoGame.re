@@ -46,7 +46,8 @@ let make = (~level=1) => {
                "Level " ++ string_of_int(state.currentLevel.number),
              )}
           </div>
-          <div className="flex-grow flex justify-center items-center">
+          <div
+            className="flex-grow flex justify-center items-center lg:flex-col">
             <div
               className="
             text-xl text-gray-500
