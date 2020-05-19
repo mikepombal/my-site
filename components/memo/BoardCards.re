@@ -14,7 +14,7 @@ let make = (~level, ~cards, ~chooseCard) => {
       className={
         "grid grid-cols-3 gap-4 md:gap-6 xl:gap-8" ++ " " ++ cssGridCol
       }>
-      {ReasonReact.array(
+      {S.arr(
          Array.map(
            x => {
              let card = ListLabels.nth(cards, x);

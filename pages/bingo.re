@@ -43,7 +43,7 @@ let make = () => {
   <div className="p-10">
     <div
       className="text-5xl bg-purple-700 text-white flex justify-center items-center rounded-lg">
-      {ReasonReact.string("Bingo")}
+      {S.str("Bingo")}
     </div>
     <div className="grid grid-cols-3 gap-10 mt-10">
       <div
@@ -52,7 +52,7 @@ let make = () => {
           ++ " "
           ++ (state.variant == 3 ? "grid-cols-3" : "grid-cols-4")
         }>
-        {ReasonReact.array(
+        {S.arr(
            Array.map(
              x =>
                <div
@@ -66,14 +66,14 @@ let make = () => {
                        : "text-purple-700 border-purple-200"
                    )
                  }>
-                 {ReasonReact.string(string_of_int(x))}
+                 {S.str(string_of_int(x))}
                </div>,
              state.selectedNumber,
            ),
          )}
       </div>
       <div className="grid grid-cols-10 gap-2 col-span-2">
-        {ReasonReact.array(
+        {S.arr(
            Array.map(
              x =>
                <div
@@ -98,7 +98,7 @@ let make = () => {
     <button
       className="mt-10 bg-purple-400 text-white px-4 py-2 rounded-lg focus:outline-none"
       onClick={_event => dispatch(SwapGrid)}>
-      {ReasonReact.string(
+      {S.str(
          "Swap to " ++ (state.variant == 3 ? "4 by 4" : "3 by 3") ++ " grid",
        )}
     </button>

@@ -31,7 +31,7 @@ let make = (~level=1) => {
   <div className="relative p-1 md:p-2 xl:p-4">
     <div
       className="bg-blue-500 text-white text-4xl font-extrabold flex justify-center items-center p-3 mb-3 rounded-lg">
-      {ReasonReact.string("Memo")}
+      {S.str("Memo")}
     </div>
     <div className="
         flex flex-col lg:flex-row
@@ -47,7 +47,7 @@ let make = (~level=1) => {
                 bg-purple-500 text-white text-xl py-2 shadow-md flex-grow flex justify-center items-baseline
                 lg:w-full lg:text-3xl
             ">
-            {ReasonReact.string(
+            {S.str(
                "Level " ++ string_of_int(state.currentLevel.number) ++ " / 7",
              )}
           </div>
@@ -58,14 +58,14 @@ let make = (~level=1) => {
             text-xl text-gray-500
             lg:text-2xl lg:mt-6
             ">
-              {ReasonReact.string("Lives:")}
+              {S.str("Lives:")}
             </div>
             <div
               className="
             text-2xl text-gray-700 pl-2
             lg:text-6xl
             ">
-              {ReasonReact.string(string_of_int(state.livesLeft))}
+              {S.int(state.livesLeft)}
             </div>
           </div>
         </div>
@@ -99,7 +99,7 @@ let make = (~level=1) => {
              className="bg-gray-400 rounded-lg flex justify-center items-center flex-col py-10 px-10 bg-opacity-75 lg:px-20">
              <div
                className="text-gray-700 text-4xl mb-8 text-center lg:text-6xl">
-               {ReasonReact.string(
+               {S.str(
                   switch (state.status, state.currentLevel.number) {
                   | (GameWon, 7) => "Champion! You've beaten all the levels."
                   | (GameWon, _) => "Winner!"
@@ -112,14 +112,14 @@ let make = (~level=1) => {
                <button
                  onClick=onClickRestartLevel
                  className="block bg-blue-700 text-white text-lg px-6 py-3 rounded shadow">
-                 {ReasonReact.string("Restart")}
+                 {S.str("Restart")}
                </button>
                {state.status == GameWon
                 && state.currentLevel.number < ListLabels.length(levels)
                   ? <button
                       onClick=onClickNextLevel
                       className="block bg-blue-700 text-white text-lg px-6 py-3 rounded shadow ml-8">
-                      {ReasonReact.string("Next Level")}
+                      {S.str("Next Level")}
                     </button>
                   : ReasonReact.null}
              </div>
