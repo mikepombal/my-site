@@ -28,11 +28,15 @@ let make = (~level=1) => {
       [|state.currentLevel|],
     );
 
-  <div className="relative">
+  <div className="relative p-1 md:p-2 xl:p-4">
+    <div
+      className="bg-blue-500 text-white text-4xl font-extrabold flex justify-center items-center p-3 mb-3 rounded-lg">
+      {ReasonReact.string("Memo")}
+    </div>
     <div className="
         flex flex-col lg:flex-row
         ">
-      <div className="flex justify-center items-center p-2 lg:p-4 lg:w-1/6">
+      <div className="flex justify-center items-center lg:pr-2 mb-4 lg:w-1/6">
         <div
           className="
             bg-gray-100 w-full flex items-center flex-row items-stretch rounded-lg shadow-lg overflow-hidden
@@ -40,11 +44,11 @@ let make = (~level=1) => {
             ">
           <div
             className="
-                bg-purple-500 text-white text-xl py-2 shadow-md flex-grow flex justify-center items-center
+                bg-purple-500 text-white text-xl py-2 shadow-md flex-grow flex justify-center items-baseline
                 lg:w-full lg:text-3xl
             ">
             {ReasonReact.string(
-               "Level " ++ string_of_int(state.currentLevel.number),
+               "Level " ++ string_of_int(state.currentLevel.number) ++ " / 7",
              )}
           </div>
           <div
@@ -66,12 +70,12 @@ let make = (~level=1) => {
           </div>
         </div>
       </div>
-      <div className="flex-grow p-2 lg:p-4">
+      <div className="flex-grow pl-2 lg:pl-4">
         <div
           style={ReactDOMRe.Style.make(
             ~maxWidth=
               string_of_int(
-                state.currentLevel.cols * 100 / state.currentLevel.rows,
+                state.currentLevel.cols * 90 / state.currentLevel.rows,
               )
               ++ "vh",
             (),
