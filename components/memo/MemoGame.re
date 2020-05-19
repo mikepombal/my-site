@@ -2,7 +2,8 @@ open MemoState;
 
 [@react.component]
 let make = (~level=1) => {
-  let (state, dispatch) = React.useReducer(reducer, initialState(level));
+  let initialState = React.useMemo1(() => initialState(level), [|level|]);
+  let (state, dispatch) = React.useReducer(reducer, initialState);
   let chooseCard =
     React.useCallback1(num => dispatch(ChooseCard(num)), [||]);
   React.useEffect1(

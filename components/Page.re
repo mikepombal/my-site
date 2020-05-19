@@ -2,10 +2,8 @@
 let make = (~children) => {
   React.useEffect1(
     () => {
-      Js.log(Global.pathname);
-      ReactGA.initialize(Process.envAnalytics);
-      ReactGA.set({"page": Global.pathname});
-      ReactGA.pageview(Global.pathname);
+      Analytics.initGA();
+      Analytics.logPageView(Global.pathname);
       None;
     },
     [||],

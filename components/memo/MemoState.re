@@ -114,6 +114,13 @@ let reducer = (state, action) => {
     | (a, Some(b)) when are2CardsEqual(state.cards, a, b) =>
       let cards = updateCardStatus(state.cards, numCard);
       let isGameFinished = !ListLabels.exists(~f=i => !i.show, cards);
+      if (isGameFinished) {
+        Analytics.logEvent(
+          ~category="Memo",
+          ~action=
+            "Concluded Level " ++ string_of_int(state.currentLevel.number),
+        );
+      };
       {
         ...state,
         status: isGameFinished ? GameWon : NoSelectedCard,
@@ -123,6 +130,12 @@ let reducer = (state, action) => {
 
     | _ =>
       let livesLeft = state.livesLeft - 1;
+      if (livesLeft <= 0) {
+        Analytics.logEvent(
+          ~category="Memo",
+          ~action="Lost Level " ++ string_of_int(state.currentLevel.number),
+        );
+      };
       {
         ...state,
         status: livesLeft <= 0 ? GameLost : TwoSelectedCards,
