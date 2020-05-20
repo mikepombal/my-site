@@ -16,6 +16,10 @@
     {
       "dir": "utils",
       "subdirs": true
+    },
+    {
+      "dir": "common",
+      "subdirs": true
     }
   ],
   "bs-dependencies": ["reason-react", "bs-webapi"],
