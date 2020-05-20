@@ -1,27 +1,26 @@
 open Types;
 
-type state = {
-  user: option(user),
-  isMount: bool,
-};
+type state =
+  | Loading
+  | CreatingUser
+  | LoggedIn(user);
 
 type action =
   | CreateUser(string)
   | LoadUser(option(user));
 
 let reducer = (state, action) =>
-  switch (action) {
-  | CreateUser(name) =>
-    let uuid = Uuid.generateUUID();
-    Storage.saveUserToStorage(name, uuid);
-    {...state, user: Some({name, uuid})};
-  | LoadUser(user) => {isMount: true, user}
+  switch (state, action) {
+  | (Loading, LoadUser(Some(user))) => LoggedIn(user)
+  | (Loading, LoadUser(None)) => CreatingUser
+  | (Loading, _) => state
+  | (CreatingUser, _) => state
+  | (LoggedIn(_), _) => state
   };
 
 [@react.component]
 let make = () => {
-  let initialState = React.useMemo(() => {isMount: false, user: None});
-  let (state, dispatch) = React.useReducer(reducer, initialState);
+  let (state, dispatch) = React.useReducer(reducer, Loading);
   React.useEffect1(
     () => {
       Storage.getUserFromStorage()->LoadUser |> dispatch;
@@ -31,11 +30,11 @@ let make = () => {
   );
 
   <div className="w-screen h-screen flex justify-center items-center">
-    {switch (state.isMount, state.user) {
-     | (false, _) => ReasonReact.string("Please wait while loading data")
-     | (true, Some(user)) =>
+    {switch (state) {
+     | Loading => ReasonReact.string("Please wait while loading data")
+     | LoggedIn(user) =>
        S.str("Welcome back " ++ user.name ++ "(" ++ user.uuid ++ ")")
-     | (true, None) =>
+     | CreatingUser =>
        <Login onSubmitName={name => CreateUser(name) |> dispatch} />
      }}
   </div>;
