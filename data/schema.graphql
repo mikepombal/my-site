@@ -1,0 +1,8 @@
+type User {
+  username: String!
+  uuid: ID!
+}
+
+type Query {
+  listUsers: [User!]!
+}
