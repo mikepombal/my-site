@@ -22,7 +22,13 @@
       "subdirs": true
     }
   ],
-  "bs-dependencies": ["reason-react", "bs-webapi"],
+  "bs-dependencies": [
+    "reason-react",
+    "reason-apollo",
+    "reason-apollo-hooks",
+    "bs-webapi"
+  ],
+  "ppx-flags": ["@baransu/graphql_ppx_re/ppx"],
   "reason": { "react-jsx": 3 },
   "package-specs": {
     "module": "es6",

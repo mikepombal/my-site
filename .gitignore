@@ -5,3 +5,7 @@ lib/
 .bsb.lock
 .next
 node_modules
+graphql_schema.json
+.graphql_ppx_cache/*
+.env
+get-schema
