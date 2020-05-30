@@ -1,8 +1,8 @@
 import "../styles/global.css";
 import App from "next/app";
+import { ApolloProvider } from "@apollo/react-common";
 import { make as Page } from "../components/Page.bs";
 import { withApollo } from "../utils/withApollo";
-import { ApolloProvider } from "@apollo/react-common";
 
 class MySiteApp extends App {
   static async getInitialProps({ Component, ctx }) {
