@@ -5,11 +5,11 @@ let getOrDefault = uuid => uuid->Js.Json.decodeString->Belt.Option.getExn;
 
 module RegisterUserMutation = [%graphql
   {|
-    mutation upsert_user ($id: uuid!, $username: String!) {
-        insert_users_one(object: { id: $id, username: $username }, on_conflict: {constraint: users_pkey, update_columns: [last_seen]}) {
-            id @bsDecoder(fn: "getOrDefault")
+    mutation upsert_user ($token: uuid!, $username: String!) {
+        insert_users_one(object: { token: $token, username: $username }, on_conflict: {constraint: users_pkey, update_columns: [last_seen]}) {
+            token @bsDecoder(fn: "getOrDefault")
             username
-            last_seen
+            user_id
         }
     }
   |}
@@ -35,7 +35,7 @@ let reducer = (state, action) =>
   | (Loading, _) => state
 
   | (CreatingUser, CreateUser(name)) =>
-    RegisteringUser({name, uuid: Uuid.generateUUID()})
+    RegisteringUser({name, uuid: Uuid.generateUUID(), userId: (-1)})
   | (CreatingUser, _) => state
 
   | (RegisteringUser(user), CompleteRegistration) => LoggedIn(user)
@@ -58,14 +58,35 @@ let make = () => {
       | RegisteringUser(user) =>
         Js.log("Sending request!");
         let variables =
-          RegisterUserMutation.make(
-            ~id=Js.Json.string(user.uuid),
+          RegisterUserMutation.makeVariables(
+            ~token=Js.Json.string(user.uuid),
             ~username=user.name,
             (),
-          )##variables;
+          );
         register(~variables, ())
-        |> Js.Promise.then_(_ => {
-             CompleteRegistration |> dispatch;
+        |> Js.Promise.then_(
+             (
+               result: (
+                 Mutation.executionVariantResult(RegisterUserMutation.t),
+                 Mutation.executionResult(RegisterUserMutation.t),
+               ),
+             ) => {
+             switch (fst(result)) {
+             | Data(data) =>
+               Js.log2("HERE IS THE DATA", data##insert_users_one);
+               switch (data##insert_users_one) {
+               | Some(user) =>
+                 Storage.saveUserToStorage({
+                   name: user##username,
+                   uuid: user##token,
+                   userId: user##user_id,
+                 })
+               | None => ShowError |> dispatch
+               };
+
+               CompleteRegistration |> dispatch;
+             | _ => ShowError |> dispatch
+             };
              Js.Promise.resolve();
            })
         |> Js.Promise.catch(error => {
@@ -86,11 +107,10 @@ let make = () => {
      | Loading => S.str("Please wait while loading data")
      | RegisteringUser(user) =>
        S.str("Please wait while registering you (" ++ user.name ++ ")")
-     | LoggedIn(user) =>
-       S.str("Welcome back " ++ user.name ++ "(" ++ user.uuid ++ ")")
      | CreatingUser =>
        <Login onSubmitName={name => CreateUser(name) |> dispatch} />
      | Error => S.str("Oops something went wrong, sorry :(")
+     | LoggedIn(user) => <GamesManager user />
      }}
   </div>;
 };
