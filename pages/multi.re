@@ -56,7 +56,6 @@ let make = () => {
       switch (state) {
       | Loading => Storage.getUserFromStorage()->LoadUser |> dispatch
       | RegisteringUser(user) =>
-        Js.log("Sending request!");
         let variables =
           RegisterUserMutation.makeVariables(
             ~token=Js.Json.string(user.uuid),
@@ -73,7 +72,6 @@ let make = () => {
              ) => {
              switch (fst(result)) {
              | Data(data) =>
-               Js.log2("HERE IS THE DATA", data##insert_users_one);
                switch (data##insert_users_one) {
                | Some(user) =>
                  Storage.saveUserToStorage({
