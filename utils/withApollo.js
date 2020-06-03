@@ -2,11 +2,13 @@ import React from "react";
 import Head from "next/head";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { InMemoryCache } from "apollo-cache-inmemory";
-import { ApolloLink } from "apollo-link";
+import { ApolloLink, split } from "apollo-link";
 import ApolloClient from "apollo-client";
 import { createHttpLink } from "apollo-link-http";
 import { setContext } from "apollo-link-context";
 import fetch from "isomorphic-unfetch";
+import { WebSocketLink } from "apollo-link-ws";
+import { getMainDefinition } from "apollo-utilities";
 
 let apolloClient = null;
 
@@ -132,9 +134,35 @@ function createApolloClient(initialState = {}) {
     },
   }));
 
-  const httpLink = createHttpLink({ uri: process.env.SERVER_URL });
+  const httpLink = createHttpLink({ uri: process.env.GRAPHQL_SERVER_HTTPS });
 
-  const link = ApolloLink.from([authLink, httpLink]);
+  const wsLink = process.browser
+    ? new WebSocketLink({
+        uri: process.env.GRAPHQL_SERVER_WS,
+        options: {
+          reconnect: true,
+          connectionParams: {
+            headers: {
+              "x-hasura-admin-secret": process.env.X_HASURA_ADMIN_SECRET,
+            },
+          },
+        },
+      })
+    : null;
+
+  const protocolLink = process.browser
+    ? split(
+        // split based on operation type
+        ({ query }) => {
+          const { kind, operation } = getMainDefinition(query);
+          return kind === "OperationDefinition" && operation === "subscription";
+        },
+        wsLink,
+        httpLink
+      )
+    : httpLink;
+
+  const link = ApolloLink.from([authLink, protocolLink]);
 
   return new ApolloClient({
     link,
