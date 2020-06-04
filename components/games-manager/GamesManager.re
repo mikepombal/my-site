@@ -30,7 +30,11 @@ let make = (~user) => {
         {S.str("Start New Game")}
       </button>
     </div>
-  | NewGame => <NewGame goBackHome={_event => BackHome |> dispatch} />
+  | NewGame =>
+    <NewGame
+      goBackHome={_event => BackHome |> dispatch}
+      userId={user.userId}
+    />
   };
 };
 
