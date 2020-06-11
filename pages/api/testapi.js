@@ -10,7 +10,7 @@ query getUser($uuid: uuid!){
 `;
 
 const execute = async (variables) => {
-    console.log("starting execute function: ", variables);
+  console.log("starting execute function: ", variables);
   const fetchResponse = await fetch(
     "https://mikepombal.herokuapp.com/v1/graphql",
     {
@@ -27,15 +27,15 @@ const execute = async (variables) => {
   return data;
 };
 
-export default function handler(req, res) {
-    console.log("Welcome to testapi: ", req);
-    const { uuid } = req.body.input;
+export default async function handler(req, res) {
+  console.log("Welcome to testapi: ", req);
+  const { uuid } = req.body.input;
 
-    const { data, errors } = await execute({ uuid });
+  const { data, errors } = await execute({ uuid });
 
-    if (errors) {
-      return res.status(400).json(errors[0])
-    }
+  if (errors) {
+    return res.status(400).json(errors[0]);
+  }
 
   res.status(200).json({ accessToken: "data.users_by_pk.username" });
 }
