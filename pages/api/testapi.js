@@ -36,5 +36,5 @@ export default function handler(req, res) {
 
   res
     .status(200)
-    .json({ accessToken: data.users_by_pk.username });
+    .json({ accessToken: "data.users_by_pk.username" });
 }
