@@ -9,8 +9,8 @@ query getUser($uuid: uuid!){
 }
 `;
 
-const execute = async (variables) => {
-  console.log("starting execute function: ", variables);
+const execute = async (variables, session_variables) => {
+  console.log("starting execute function: ", session_variables);
   const fetchResponse = await fetch(
     "https://mikepombal.herokuapp.com/v1/graphql",
     {
@@ -19,19 +19,21 @@ const execute = async (variables) => {
         query: HASURA_OPERATION,
         variables,
       }),
+      headers: session_variables,
     }
   );
-  console.log("cool, now getting the data: ", fetchResponse);
+  console.log("cool, now getting the data");
   const data = await fetchResponse.json();
   console.log("DEBUG: ", data);
   return data;
 };
 
 export default async function handler(req, res) {
-  console.log("Welcome to testapi: ", req);
+  console.log("Welcome to testapi: ");
   const { uuid } = req.body.input;
+  const session_variables = req.body.session_variables;
 
-  const { data, errors } = await execute({ uuid });
+  const { data, errors } = await execute({ uuid }, session_variables);
 
   if (errors) {
     return res.status(400).json(errors[0]);
