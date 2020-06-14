@@ -31,6 +31,7 @@ const execute = async (variables, session_variables) => {
 export default async function handler(req, res) {
   console.log("Welcome to testapi: ");
   const { uuid } = req.body.input;
+  console.log(req.headers);
   const session_variables = req.body.session_variables;
 
   const { data, errors } = await execute({ uuid }, session_variables);
