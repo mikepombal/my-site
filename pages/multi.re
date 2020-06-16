@@ -70,7 +70,7 @@ let make = () => {
              ) => {
              switch (fst(result)) {
              | Data(data) =>
-               Js.log(data);
+               Js.log2("The data from the mutation is", data);
                //    switch (data##insert_users_one) {
                //    | Some(user) =>
                //      Storage.saveUserToStorage({
