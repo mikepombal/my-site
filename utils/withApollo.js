@@ -130,7 +130,7 @@ function initApolloClient(initialState) {
 function createApolloClient(initialState = {}) {
   const authLink = setContext((request, previousContext) => ({
     headers: {
-      "x-hasura-admin-secret": process.env.X_HASURA_ADMIN_SECRET,
+      Authorisation: "",
     },
   }));
 
@@ -143,7 +143,7 @@ function createApolloClient(initialState = {}) {
           reconnect: true,
           connectionParams: {
             headers: {
-              "x-hasura-admin-secret": process.env.X_HASURA_ADMIN_SECRET,
+              Authorization: "",
             },
           },
         },

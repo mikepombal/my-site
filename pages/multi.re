@@ -5,12 +5,10 @@ let getOrDefault = uuid => uuid->Js.Json.decodeString->Belt.Option.getExn;
 
 module RegisterUserMutation = [%graphql
   {|
-    mutation upsert_user ($token: uuid!, $username: String!) {
-        insert_users_one(object: { token: $token, username: $username }, on_conflict: {constraint: users_pkey, update_columns: [last_seen]}) {
-            token @bsDecoder(fn: "getOrDefault")
-            username
-            user_id
-        }
+    mutation register($uuid: uuid!, $username: String!){
+      register (uuid: $uuid, username: $username) {
+        token
+      }
     }
   |}
 ];
@@ -58,7 +56,7 @@ let make = () => {
       | RegisteringUser(user) =>
         let variables =
           RegisterUserMutation.makeVariables(
-            ~token=Js.Json.string(user.uuid),
+            ~uuid=Js.Json.string(user.uuid),
             ~username=user.name,
             (),
           );
@@ -72,15 +70,16 @@ let make = () => {
              ) => {
              switch (fst(result)) {
              | Data(data) =>
-               switch (data##insert_users_one) {
-               | Some(user) =>
-                 Storage.saveUserToStorage({
-                   name: user##username,
-                   uuid: user##token,
-                   userId: user##user_id,
-                 })
-               | None => ShowError |> dispatch
-               };
+               Js.log(data);
+               //    switch (data##insert_users_one) {
+               //    | Some(user) =>
+               //      Storage.saveUserToStorage({
+               //        name: user##username,
+               //        uuid: user##token,
+               //        userId: user##user_id,
+               //      })
+               //    | None => ShowError |> dispatch
+               //    };
 
                CompleteRegistration |> dispatch;
              | _ => ShowError |> dispatch
@@ -108,9 +107,10 @@ let make = () => {
      | CreatingUser =>
        <Login onSubmitName={name => CreateUser(name) |> dispatch} />
      | Error => S.str("Oops something went wrong, sorry :(")
-     | LoggedIn(user) => <GamesManager user />
+     | LoggedIn(_user) => S.str("The login was succesfull")
      }}
   </div>;
 };
+// | LoggedIn(user) => <GamesManager user />
 
 let default = make;
