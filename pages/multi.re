@@ -8,6 +8,7 @@ module RegisterUserMutation = [%graphql
     mutation register($uuid: uuid!, $username: String!){
       register (uuid: $uuid, username: $username) {
         token
+        username
       }
     }
   |}

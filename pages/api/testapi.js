@@ -30,6 +30,9 @@
 
 export default async function handler(req, res) {
   console.log("Welcome to testapi: ");
+  console.log("req.body.input: ", req.body.input);
+  console.log("req.body.session_variables: ", req.body.session_variables);
+
   //   const { uuid } = req.body.input;
   //   console.log(req.headers);
   //   const session_variables = req.body.session_variables;
@@ -41,5 +44,8 @@ export default async function handler(req, res) {
   //     return res.status(400).json(errors[0]);
   //   }
 
-  res.status(200).json({ token: "Something to be defined" });
+  res.status(200).json({
+    token: "Something to be defined",
+    username: "username",
+  });
 }
