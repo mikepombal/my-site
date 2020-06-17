@@ -34,8 +34,8 @@ export default async function handler(req, res) {
   console.log("Welcome to testapi: ");
   console.log("req.body.input: ", req.body.input);
   console.log("req.body.session_variables: ", req.body.session_variables);
-  console.log("req.headers[ACTION_SECRET]: ", req.headers);
-  console.log("process.env.ACTION_SECRET_ENV", process.env.ACTION_SECRET_ENV);
+  console.log("req.headers[ACTION_SECRET]: ", req.headers[ACTION_SECRET]);
+  console.log("process.env.ACTION_SECRET_ENV", process);
 
   //   const { uuid } = req.body.input;
   //   console.log(req.headers);
