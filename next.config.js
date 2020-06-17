@@ -11,5 +11,6 @@ module.exports = withTM({
     analytics: process.env.GA_ID,
     GRAPHQL_SERVER_HTTPS: process.env.GRAPHQL_SERVER_HTTPS,
     GRAPHQL_SERVER_WS: process.env.GRAPHQL_SERVER_WS,
+    ACTION_SECRET_ENV: process.env.ACTION_SECRET_ENV,
   },
 });
