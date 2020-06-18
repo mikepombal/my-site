@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 // const fetch = require("node-fetch");
 
 // const HASURA_OPERATION = `
@@ -33,6 +31,8 @@ require("dotenv").config();
 const ACTION_SECRET = "action_secret";
 
 export default async function handler(req, res) {
+  console.log("Welcome to testapi: ");
+
   if (process.env.ACTION_SECRET_ENV !== req.headers[ACTION_SECRET]) {
     return res.status(403).json({
       status: 403,
@@ -40,23 +40,20 @@ export default async function handler(req, res) {
     });
   }
 
-  //   console.log("Welcome to testapi: ");
-  //   console.log("req.body.input: ", req.body.input);
-  //   console.log("req.body.session_variables: ", req.body.session_variables);
+  console.log("req.body.input: ", req.body.input);
+  console.log("req.body.session_variables: ", req.body.session_variables);
   //   console.log("req.headers[ACTION_SECRET]: ", req.headers[ACTION_SECRET]);
-  //   console.log("process.env.ACTION_SECRET_ENV", process.env);
-  //   console.log("process.env.ACTION_SECRET_ENV", process.env.ACTION_SECRET_ENV);
 
   //   const { uuid } = req.body.input;
   //   console.log(req.headers);
-  //   const session_variables = req.body.session_variables;
+  // const session_variables = req.body.session_variables;
 
-  //   const { data, errors } = await execute({ uuid }, session_variables);
+  // const { data, errors } = await execute({ uuid: "0d0fbc2f-3d1c-4add-94e3-a54f3fde7d40" }, session_variables);
 
-  //   if (errors) {
-  //     console.log("There is an error while trying to get the data");
-  //     return res.status(400).json(errors[0]);
-  //   }
+  // if (errors) {
+  //   console.log("There is an error while trying to get the data");
+  //   return res.status(400).json(errors[0]);
+  // }
 
   return res.status(200).json({
     token: "Something to be defined",
