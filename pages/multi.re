@@ -9,6 +9,19 @@ module RegisterUserMutation = [%graphql
       register (uuid: $uuid, username: $username) {
         token
         username
+        user_id
+      }
+    }
+  |}
+];
+
+module LoginMutation = [%graphql
+  {|
+    mutation login($uuid: uuid!) {
+      login(uuid: $uuid) {
+        token
+        username
+        user_id
       }
     }
   |}
@@ -17,7 +30,8 @@ module RegisterUserMutation = [%graphql
 type state =
   | Loading
   | CreatingUser
-  | RegisteringUser(user)
+  | LoggingIn(user)
+  | Registering(user)
   | LoggedIn(user)
   | Error;
 
@@ -29,17 +43,20 @@ type action =
 
 let reducer = (state, action) =>
   switch (state, action) {
-  | (Loading, LoadUser(Some(user))) => RegisteringUser(user)
+  | (Loading, LoadUser(Some(user))) => LoggingIn(user)
   | (Loading, LoadUser(None)) => CreatingUser
   | (Loading, _) => state
 
   | (CreatingUser, CreateUser(name)) =>
-    RegisteringUser({name, uuid: Uuid.generateUUID(), userId: (-1)})
+    Registering({name, uuid: Uuid.generateUUID(), userId: (-1), token: None})
   | (CreatingUser, _) => state
 
-  | (RegisteringUser(user), CompleteRegistration) => LoggedIn(user)
-  | (RegisteringUser(_), ShowError) => Error
-  | (RegisteringUser(_), _) => state
+  | (LoggingIn(user), CompleteRegistration) => LoggedIn(user)
+  | (LoggingIn(_), ShowError) => Error
+  | (LoggingIn(_), _) => state
+
+  | (Registering(user), CompleteRegistration) => LoggedIn(user)
+  | (Registering(_), _) => state
 
   | (LoggedIn(_), _) => state
 
@@ -50,11 +67,48 @@ let reducer = (state, action) =>
 let make = () => {
   let (state, dispatch) = React.useReducer(reducer, Loading);
   let (register, _, _) = useMutation(RegisterUserMutation.definition);
+  let (login, _, _) = useMutation(LoginMutation.definition);
   React.useEffect1(
     () => {
       switch (state) {
       | Loading => Storage.getUserFromStorage()->LoadUser |> dispatch
-      | RegisteringUser(user) =>
+      | LoggingIn(user) =>
+        let variables =
+          LoginMutation.makeVariables(~uuid=Js.Json.string(user.uuid), ());
+        login(~variables, ())
+        |> Js.Promise.then_(
+             (
+               result: (
+                 Mutation.executionVariantResult(LoginMutation.t),
+                 Mutation.executionResult(LoginMutation.t),
+               ),
+             ) => {
+             switch (fst(result)) {
+             | Data(data) =>
+               Js.log2("The data from the login mutation is", data);
+               switch (data##login) {
+               | Some(u) =>
+                 Storage.saveUserToStorage({
+                   name: u##username,
+                   token: Some(u##token),
+                   userId: u##user_id,
+                   uuid: user.uuid,
+                 })
+               | None => ShowError |> dispatch
+               };
+
+               CompleteRegistration |> dispatch;
+             | _ => ShowError |> dispatch
+             };
+             Js.Promise.resolve();
+           })
+        |> Js.Promise.catch(error => {
+             Js.log2("Something wrong", error);
+             Js.Promise.resolve();
+           })
+        |> ignore;
+
+      | Registering(user) =>
         let variables =
           RegisterUserMutation.makeVariables(
             ~uuid=Js.Json.string(user.uuid),
@@ -71,16 +125,17 @@ let make = () => {
              ) => {
              switch (fst(result)) {
              | Data(data) =>
-               Js.log2("The data from the mutation is", data);
-               //    switch (data##insert_users_one) {
-               //    | Some(user) =>
-               //      Storage.saveUserToStorage({
-               //        name: user##username,
-               //        uuid: user##token,
-               //        userId: user##user_id,
-               //      })
-               //    | None => ShowError |> dispatch
-               //    };
+               Js.log2("The data from the registration mutation is", data);
+               switch (data##register) {
+               | Some(u) =>
+                 Storage.saveUserToStorage({
+                   name: u##username,
+                   token: Some(u##token),
+                   userId: u##user_id,
+                   uuid: user.uuid,
+                 })
+               | None => ShowError |> dispatch
+               };
 
                CompleteRegistration |> dispatch;
              | _ => ShowError |> dispatch
@@ -103,7 +158,8 @@ let make = () => {
   <div className="w-screen h-screen flex justify-center items-center">
     {switch (state) {
      | Loading => S.str("Please wait while loading data")
-     | RegisteringUser(user) =>
+     | LoggingIn(user)
+     | Registering(user) =>
        S.str("Please wait while registering you (" ++ user.name ++ ")")
      | CreatingUser =>
        <Login onSubmitName={name => CreateUser(name) |> dispatch} />

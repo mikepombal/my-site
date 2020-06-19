@@ -271,7 +271,7 @@
         "kind": "OBJECT",
         "possibleTypes": null,
         "interfaces": [],
-        "name": "RegisterOutput",
+        "name": "LoginOutput",
         "enumValues": null,
         "description": null,
         "fields": [
@@ -286,6 +286,22 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "user_id",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
                 "ofType": null
               }
             },
@@ -310,9 +326,98 @@
         ]
       },
       {
+        "inputFields": null,
+        "kind": "OBJECT",
+        "possibleTypes": null,
+        "interfaces": [],
+        "name": "RegisterOutput",
+        "enumValues": null,
+        "description": null,
+        "fields": [
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "token",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "user_id",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "username",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "uuid",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "uuid",
+                "ofType": null
+              }
+            },
+            "description": null
+          }
+        ]
+      },
+      {
         "inputFields": [
           {
-            "name": "test",
+            "name": "password",
+            "defaultValue": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "name": "username",
             "defaultValue": null,
             "type": {
               "kind": "NON_NULL",
@@ -8340,7 +8445,7 @@
           {
             "args": [
               {
-                "name": "token",
+                "name": "user_uuid",
                 "defaultValue": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -8753,6 +8858,33 @@
               "ofType": null
             },
             "description": "insert a single row into the table: \"users\""
+          },
+          {
+            "args": [
+              {
+                "name": "uuid",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "uuid",
+                    "ofType": null
+                  }
+                },
+                "description": null
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "login",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LoginOutput",
+              "ofType": null
+            },
+            "description": "perform the action: \"login\""
           },
           {
             "args": [
@@ -10271,7 +10403,7 @@
           {
             "args": [
               {
-                "name": "token",
+                "name": "user_uuid",
                 "defaultValue": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -11301,7 +11433,7 @@
           {
             "args": [
               {
-                "name": "token",
+                "name": "user_uuid",
                 "defaultValue": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -11495,13 +11627,13 @@
             "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "token",
+            "name": "user_id",
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "uuid",
+                "name": "Int",
                 "ofType": null
               }
             },
@@ -11511,13 +11643,13 @@
             "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "user_id",
+            "name": "user_uuid",
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "uuid",
                 "ofType": null
               }
             },
@@ -12029,21 +12161,21 @@
             "description": null
           },
           {
-            "name": "token",
-            "defaultValue": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "uuid_comparison_exp",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
             "name": "user_id",
             "defaultValue": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "Int_comparison_exp",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "user_uuid",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "uuid_comparison_exp",
               "ofType": null
             },
             "description": null
@@ -12140,21 +12272,21 @@
             "description": null
           },
           {
-            "name": "token",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "uuid",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
             "name": "user_id",
             "defaultValue": null,
             "type": {
               "kind": "SCALAR",
               "name": "Int",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "user_uuid",
+            "defaultValue": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
               "ofType": null
             },
             "description": null
@@ -12215,10 +12347,10 @@
             "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "token",
+            "name": "user_id",
             "type": {
               "kind": "SCALAR",
-              "name": "uuid",
+              "name": "Int",
               "ofType": null
             },
             "description": null
@@ -12227,10 +12359,10 @@
             "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "user_id",
+            "name": "user_uuid",
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "uuid",
               "ofType": null
             },
             "description": null
@@ -12272,7 +12404,7 @@
             "description": null
           },
           {
-            "name": "token",
+            "name": "user_id",
             "defaultValue": null,
             "type": {
               "kind": "ENUM",
@@ -12282,7 +12414,7 @@
             "description": null
           },
           {
-            "name": "user_id",
+            "name": "user_uuid",
             "defaultValue": null,
             "type": {
               "kind": "ENUM",
@@ -12347,10 +12479,10 @@
             "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "token",
+            "name": "user_id",
             "type": {
               "kind": "SCALAR",
-              "name": "uuid",
+              "name": "Int",
               "ofType": null
             },
             "description": null
@@ -12359,10 +12491,10 @@
             "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "user_id",
+            "name": "user_uuid",
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "uuid",
               "ofType": null
             },
             "description": null
@@ -12404,7 +12536,7 @@
             "description": null
           },
           {
-            "name": "token",
+            "name": "user_id",
             "defaultValue": null,
             "type": {
               "kind": "ENUM",
@@ -12414,7 +12546,7 @@
             "description": null
           },
           {
-            "name": "user_id",
+            "name": "user_uuid",
             "defaultValue": null,
             "type": {
               "kind": "ENUM",
@@ -12608,7 +12740,7 @@
             "description": null
           },
           {
-            "name": "token",
+            "name": "user_id",
             "defaultValue": null,
             "type": {
               "kind": "ENUM",
@@ -12618,7 +12750,7 @@
             "description": null
           },
           {
-            "name": "user_id",
+            "name": "user_uuid",
             "defaultValue": null,
             "type": {
               "kind": "ENUM",
@@ -12649,7 +12781,7 @@
       {
         "inputFields": [
           {
-            "name": "token",
+            "name": "user_uuid",
             "defaultValue": null,
             "type": {
               "kind": "NON_NULL",
@@ -12693,13 +12825,13 @@
           {
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "token",
+            "name": "user_id",
             "description": "column name"
           },
           {
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "user_id",
+            "name": "user_uuid",
             "description": "column name"
           },
           {
@@ -12735,21 +12867,21 @@
             "description": null
           },
           {
-            "name": "token",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "uuid",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
             "name": "user_id",
             "defaultValue": null,
             "type": {
               "kind": "SCALAR",
               "name": "Int",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "user_uuid",
+            "defaultValue": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
               "ofType": null
             },
             "description": null
@@ -12971,13 +13103,13 @@
           {
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "token",
+            "name": "user_id",
             "description": "column name"
           },
           {
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "user_id",
+            "name": "user_uuid",
             "description": "column name"
           },
           {
