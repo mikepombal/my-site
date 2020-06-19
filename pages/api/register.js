@@ -5,6 +5,7 @@ const HASURA_OPERATION = `
   mutation createUser($uuid: uuid!, $username: String!) {
     insert_users_one(object: {user_uuid: $uuid, username: $username}) {
       username
+      user_id
     }
   }
 `;
@@ -67,5 +68,6 @@ export default async function handler(req, res) {
     token,
     uuid,
     username: data.insert_users_one.username,
+    user_id: data.insert_users_one.user_id,
   });
 }

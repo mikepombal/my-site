@@ -5,6 +5,7 @@ const HASURA_OPERATION = `
   query getUser($uuid: uuid!) {
     users_by_pk(user_uuid: $uuid) {
       username
+      user_id
     }
   }
 `;
@@ -72,5 +73,6 @@ export default async function handler(req, res) {
   return res.status(200).json({
     token,
     username: data.users_by_pk.username,
+    user_id: data.users_by_pk.user_id,
   });
 }
