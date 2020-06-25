@@ -9,6 +9,7 @@ import { setContext } from "apollo-link-context";
 import fetch from "isomorphic-unfetch";
 import { WebSocketLink } from "apollo-link-ws";
 import { getMainDefinition } from "apollo-utilities";
+import { getAccessToken } from "./AccessToken.bs";
 
 let apolloClient = null;
 
@@ -21,7 +22,13 @@ let apolloClient = null;
  * @param {Boolean} [config.ssr=true]
  */
 export function withApollo(PageComponent, { ssr = true } = {}) {
-  const WithApollo = ({ apolloClient, apolloState, ...pageProps }) => {
+  const WithApollo = ({
+    apolloClient,
+    serverAccessToken,
+    apolloState,
+    ...pageProps
+  }) => {
+    console.log("serverAccessToken", serverAccessToken);
     const client = apolloClient || initApolloClient(apolloState);
     return (
       <ApolloProvider client={client}>
@@ -128,10 +135,15 @@ function initApolloClient(initialState) {
  * @param  {Object} [initialState={}]
  */
 function createApolloClient(initialState = {}) {
+  console.log("WHEN COMING HERE!!!", getAccessToken());
+  let token = getAccessToken();
+
   const authLink = setContext((request, previousContext) => ({
-    headers: {
-      Authorisation: "",
-    },
+    headers: token
+      ? {
+          Authorization: `Bearer ${token}`,
+        }
+      : {},
   }));
 
   const httpLink = createHttpLink({ uri: process.env.GRAPHQL_SERVER_HTTPS });

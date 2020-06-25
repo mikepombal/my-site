@@ -48,7 +48,7 @@ let reducer = (state, action) =>
   | (Loading, _) => state
 
   | (CreatingUser, CreateUser(name)) =>
-    Registering({name, uuid: Uuid.generateUUID(), userId: (-1), token: None})
+    Registering({name, uuid: Uuid.generateUUID(), userId: (-1)})
   | (CreatingUser, _) => state
 
   | (LoggingIn(user), CompleteRegistration) => LoggedIn(user)
@@ -90,10 +90,10 @@ let make = () => {
                | Some(u) =>
                  Storage.saveUserToStorage({
                    name: u##username,
-                   token: Some(u##token),
                    userId: u##user_id,
                    uuid: user.uuid,
-                 })
+                 });
+                 AccessToken.setAccessToken(u##token);
                | None => ShowError |> dispatch
                };
 
@@ -130,10 +130,10 @@ let make = () => {
                | Some(u) =>
                  Storage.saveUserToStorage({
                    name: u##username,
-                   token: Some(u##token),
                    userId: u##user_id,
                    uuid: user.uuid,
-                 })
+                 });
+                 AccessToken.setAccessToken(u##token);
                | None => ShowError |> dispatch
                };
 
@@ -164,10 +164,9 @@ let make = () => {
      | CreatingUser =>
        <Login onSubmitName={name => CreateUser(name) |> dispatch} />
      | Error => S.str("Oops something went wrong, sorry :(")
-     | LoggedIn(_user) => S.str("The login was succesfull")
+     | LoggedIn(user) => <GamesManager user />
      }}
   </div>;
 };
-// | LoggedIn(user) => <GamesManager user />
 
 let default = make;

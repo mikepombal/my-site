@@ -58,8 +58,8 @@ let make = (~goBackHome, ~userId) => {
   let (state, dispatch) =
     React.useReducer(reducer, Selection({gameId: None, users: []}));
   let (simple, _) = useQuery(GamesListQuery.definition);
-  let (activeUsers, _) =
-    ApolloHooks.useSubscription(ActiveUsersSubscription.definition);
+  //   let (activeUsers, _) =
+  //     ApolloHooks.useSubscription(ActiveUsersSubscription.definition);
 
   React.useEffect1(
     () => {
@@ -67,7 +67,7 @@ let make = (~goBackHome, ~userId) => {
       | PreparingGame(config) =>
         switch (config.gameId) {
         | Some(gameId) =>
-          Js.log("Prepare game with id of " ++ string_of_int( gameId));
+          Js.log("Prepare game with id of " ++ string_of_int(gameId));
           ();
         | _ => ()
         }
@@ -111,39 +111,39 @@ let make = (~goBackHome, ~userId) => {
             | _ => S.str("Oops something wrong")
             }}
          </ul>
-         <div>
-           {switch (activeUsers) {
-            | Loading =>
-              <div> {ReasonReact.string("Loading list active users")} </div>
-            | Data(data) =>
-              <ul>
-                {Array.map(
-                   user =>
-                     switch (user##user_id, user##username) {
-                     | (Some(id), Some(username)) when id != userId =>
-                       <li key={string_of_int(id)}>
-                         <button
-                           className={
-                             "px-6 py-2 flex justify-center align-middle mb-2 w-full focus:outline-none"
-                             ++ (
-                               Belt.List.some(config.users, u => u == id)
-                                 ? " bg-green-500" : " bg-gray-300"
-                             )
-                           }
-                           onClick={_event => SelectUser(id) |> dispatch}>
-                           {S.str(username)}
-                         </button>
-                       </li>
-                     | (_, _) => React.null
-                     },
-                   data##active_users,
-                 )
-                 |> S.arr}
-              </ul>
-            | NoData => S.str("No data")
-            | _ => S.str("Oops something wrong")
-            }}
-         </div>
+         //  <div>
+         //    {switch (activeUsers) {
+         //     | Loading =>
+         //       <div> {ReasonReact.string("Loading list active users")} </div>
+         //     | Data(data) =>
+         //       <ul>
+         //         {Array.map(
+         //            user =>
+         //              switch (user##user_id, user##username) {
+         //              | (Some(id), Some(username)) when id != userId =>
+         //                <li key={string_of_int(id)}>
+         //                  <button
+         //                    className={
+         //                      "px-6 py-2 flex justify-center align-middle mb-2 w-full focus:outline-none"
+         //                      ++ (
+         //                        Belt.List.some(config.users, u => u == id)
+         //                          ? " bg-green-500" : " bg-gray-300"
+         //                      )
+         //                    }
+         //                    onClick={_event => SelectUser(id) |> dispatch}>
+         //                    {S.str(username)}
+         //                  </button>
+         //                </li>
+         //              | (_, _) => React.null
+         //              },
+         //            data##active_users,
+         //          )
+         //          |> S.arr}
+         //       </ul>
+         //     | NoData => S.str("No data")
+         //     | _ => S.str("Oops something wrong")
+         //     }}
+         //  </div>
          <button
            className="bg-blue-400 text-white"
            onClick={_ => CreateGame |> dispatch}>
